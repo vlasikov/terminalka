@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     connect(ui->BaudRateBox, SIGNAL(currentIndexChanged(int)) ,this, SLOT(checkCustomBaudRatePolicy(int)));
+    ui->BaudRateBox->addItem(QLatin1String("57600"), QSerialPort::Baud57600);
     ui->BaudRateBox->addItem(QLatin1String("9600"), QSerialPort::Baud9600);
     ui->BaudRateBox->addItem(QLatin1String("19200"), QSerialPort::Baud19200);
     ui->BaudRateBox->addItem(QLatin1String("38400"), QSerialPort::Baud38400);

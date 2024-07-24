@@ -61,10 +61,24 @@
       <x>10</x>
       <y>40</y>
       <width>191</width>
-      <height>221</height>
+      <height>131</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
+     <item row="2" column="0">
+      <widget class="QLabel" name="lP">
+       <property name="text">
+        <string>Parity:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QComboBox" name="FlowControlBox">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="0">
       <widget class="QLabel" name="lBR">
        <property name="text">
@@ -86,22 +100,8 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QComboBox" name="DataBitsBox">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="1">
       <widget class="QComboBox" name="BaudRateBox">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QComboBox" name="FlowControlBox">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -114,10 +114,17 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="lP">
+     <item row="4" column="0">
+      <widget class="QLabel" name="lFC">
        <property name="text">
-        <string>Parity:</string>
+        <string>Flow control:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="DataBitsBox">
+       <property name="enabled">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -125,13 +132,6 @@
       <widget class="QLabel" name="lSB">
        <property name="text">
         <string>Stop bits:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="lFC">
-       <property name="text">
-        <string>Flow control:</string>
        </property>
       </widget>
      </item>
@@ -160,7 +160,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>290</y>
+      <y>200</y>
       <width>191</width>
       <height>29</height>
      </rect>
@@ -237,7 +237,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>260</y>
+      <y>170</y>
       <width>191</width>
       <height>31</height>
      </rect>

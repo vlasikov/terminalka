@@ -38,7 +38,7 @@ void Port :: ConnectPort(void){//
                 && thisPort.setFlowControl(SettingsPort.flowControl))
         {
             if (thisPort.isOpen()){
-                error_((SettingsPort.name+ " >> Открыт!\r").toLocal8Bit());
+                error_((SettingsPort.name.toLocal8Bit()+ " >> Открыт!\r"));
             }
         } else {
             thisPort.close();
