@@ -60,8 +60,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this,SIGNAL(savesettings(QString,int,int,int,int,int)),PortNew,SLOT(Write_Settings_Port(QString,int,int,int,int,int)));//Слот - ввод настроек!
     connect(ui->BtnConnect, SIGNAL(clicked()),PortNew,SLOT(ConnectPort()));
     connect(ui->BtnDisconect, SIGNAL(clicked()),PortNew,SLOT(DisconnectPort()));
-    connect(PortNew, SIGNAL(outPort(QString)), this, SLOT(Print(QString)));//Лог ошибок
+    connect(PortNew, SIGNAL(outPort(QString)), this, SLOT(Print(QString)));//Лог ошибок ? ЗАЧЕМ ?
     connect(this,SIGNAL(writeData(QByteArray)),PortNew,SLOT(WriteToPort(QByteArray)));
+
+    connect(PortNew, SIGNAL(infoPort(int, int)), this, SLOT(sl_infoPort(int, int)));
     thread_New->start();
 }
 //++++++++[Процедура закрытия приложения]+++++++++++++++++++++++++++++++++++++++++++++
@@ -71,7 +73,7 @@ MainWindow::~MainWindow()
     delete ui; //Удаление формы
 }
 
-//++++++++[Процедура пределения подключенных портов]+++++++++++++++++++++++++++++++++++
+//++++++++[Процедура определения подключенных портов]+++++++++++++++++++++++++++++++++++
 void MainWindow::on_Btn_Serch_clicked()
 {
     ui->PortNameBox->clear();
@@ -94,7 +96,8 @@ void MainWindow::checkCustomBaudRatePolicy(int idx)
 void MainWindow::on_cEnterText_returnPressed()
 {
     QByteArray data; // Текстовая переменная
-    data = ui->cEnterText->text().toLocal8Bit().toHex() + '\r'; // Присвоение "data" значения из EnterText
+    //data = ui->cEnterText->text().toLocal8Bit().toHex(); // Присвоение "data" значения из EnterText
+    data = ui->cEnterText->text().toLocal8Bit(); // Присвоение "data" значения из EnterText
     writeData(data); // Отправка данных в порт
     Print(data); // Вывод данных в консоль
 }
@@ -111,4 +114,14 @@ void MainWindow::on_BtnSave_clicked()
 savesettings(ui->PortNameBox->currentText(), ui->BaudRateBox->currentText().toInt(),ui->DataBitsBox->currentText().toInt(),
              ui->ParityBox->currentText().toInt(), ui->StopBitsBox->currentText().toInt(), ui->FlowControlBox->currentText().toInt());
 
+}
+
+void MainWindow::on_cBtnSend_clicked()
+{
+
+}
+
+void MainWindow::sl_infoPort(int counterPacketRead, int counterPacketWrite)
+{
+    ui->label_4->setText(QString::number(counterPacketRead));
 }

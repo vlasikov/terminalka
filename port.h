@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QtSerialPort/QSerialPort>
 #include <QtSerialPort/QSerialPortInfo>
+#include <QDateTime>
+#include <QStringList>
 
 struct Settings {
     QString name;
@@ -25,8 +27,12 @@ public:
     ~Port();
 
     QSerialPort thisPort;
-
     Settings SettingsPort;
+
+    QDateTime timePingSend, pingRead;
+    qint64 ping, counterCmdRead;
+    QStringList words;
+
 
 signals:
 
@@ -35,6 +41,10 @@ signals:
     void error_(QString err);
 
     void outPort(QString data);
+
+    void infoPort(int counterPacketRead, int counterPacketWrite);
+
+
 
 public slots:
 

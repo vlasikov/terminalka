@@ -1,9 +1,14 @@
 #include "port.h"
 #include <qdebug.h>
 
+#include "ui_mainwindow.h"
+//#include "mainwindow.h"
+
 Port::Port(QObject *parent) :
     QObject(parent)
 {
+    counterCmdRead = 0;
+//    ui->label4->setText("qwe");
 }
 
 Port::~Port()
@@ -67,18 +72,57 @@ void  Port::DisconnectPort(){
 }
 //ot tuta kovuratji!!!
 void Port :: WriteToPort(QByteArray data){
+    //words = QStringList::split(" ", data);
+    qDebug() << "data ="<<data;
+    QStringList cmd = (QString(data)).split(QRegExp("$"), QString::SkipEmptyParts);
+    cmd[0] = "10";
+    qDebug() << "cmd = "<<cmd;
+//    if(thisPort.isOpen()){
+//        thisPort.write(data);
+//    }
+//    timePingSend = QDateTime::currentDateTime();
+
+    qDebug() << "cmd[0] = "<<cmd[0];
+    unsigned short sh = cmd[0][0].unicode();
+    qDebug() << "sh ="<<sh;
+    qDebug() << "cmdList[0] ="<<cmd[0].toUShort();
+    qDebug()<<"timeSend = " + timePingSend.toString("yyyy/MM/dd hh:mm:ss,zzz");
+
+//    QString hexStr = "0123456789ABCDEF";
+//    QByteArray hex = QByteArray::fromHex(hexStr.toAscii());
+//    int size = hex.size();
+//    for(int i = 0; i < size; ++i){
+//      qDebug() << hex[i] << " ";
+//    }
+
+    QByteArray ba(5, 0); // array length 4, filled with 0
+    ba[0] = 0x55;
+    ba[1] = 0x55;
+    ba[2] = 0x01;
+    ba[3] = 0x01;
+    ba[4] = 0x02;
     if(thisPort.isOpen()){
-        thisPort.write(data);
+        thisPort.write(ba);
     }
+    QByteArray ba_as_hex_string = ba.toHex();
+    qDebug() << "ba_as_hex_string ="<<ba_as_hex_string;
 }
 //
 void Port :: ReadInPort(){
     QByteArray data;
-
     data.append(thisPort.readAll());
 
-    outPort(data);
+    pingRead =  QDateTime::currentDateTime();
+    qDebug()<<"Read = " + pingRead.toString("yyyy/MM/dd hh:mm:ss,zzz");
+    ping = pingRead.toMSecsSinceEpoch()-timePingSend.toMSecsSinceEpoch();
+    qDebug()<<"timeRead = " + QString::number(ping);
 
-    //((QString)(adr.toInt())).toLatin1().toHex()
+//    outPort(data);
+
+    QByteArray ba_as_hex_string = data.toHex();
+    outPort(ba_as_hex_string);
+
+    counterCmdRead += data.length();
+    infoPort(counterCmdRead, 2);
 }
 

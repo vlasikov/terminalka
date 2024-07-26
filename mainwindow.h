@@ -31,6 +31,10 @@ private slots:
     void on_cEnterText_returnPressed();
     void on_BtnSave_clicked();
 
+    void on_cBtnSend_clicked();
+
+    void sl_infoPort(int, int);
+
 private:
     Ui::MainWindow *ui;
 
