@@ -1,14 +1,10 @@
 #include "port.h"
 #include <qdebug.h>
 
-#include "ui_mainwindow.h"
-//#include "mainwindow.h"
-
 Port::Port(QObject *parent) :
     QObject(parent)
 {
     counterCmdRead = 0;
-//    ui->label4->setText("qwe");
 }
 
 Port::~Port()
