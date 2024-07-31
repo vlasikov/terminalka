@@ -5,6 +5,7 @@ Port::Port(QObject *parent) :
     QObject(parent)
 {
     counterCmdRead = 0;
+    counterCmdWrite = 0;
 }
 
 Port::~Port()
@@ -68,23 +69,16 @@ void  Port::DisconnectPort(){
 }
 //ot tuta kovuratji!!!
 void Port :: WriteToPort(QByteArray data){
-    //words = QStringList::split(" ", data);
     qDebug() << "data ="<<data;
-    QStringList cmd = (QString(data)).split(QRegExp("$"), QString::SkipEmptyParts);
-    cmd[0] = "10";
+    QStringList cmd = (QString(data)).split(QRegExp("$"), QString::SkipEmptyParts);     // delete $
     qDebug() << "cmd = "<<cmd;
-//    if(thisPort.isOpen()){
-//        thisPort.write(data);
-//    }
-//    timePingSend = QDateTime::currentDateTime();
 
-    qDebug() << "cmd[0] = "<<cmd[0];
     unsigned short sh = cmd[0][0].unicode();
     qDebug() << "sh ="<<sh;
     qDebug() << "cmdList[0] ="<<cmd[0].toUShort();
-    qDebug()<<"timeSend = " + timePingSend.toString("yyyy/MM/dd hh:mm:ss,zzz");
+    qDebug()<<"timeSend = " + pingSend.toString("yyyy/MM/dd hh:mm:ss,zzz");
 
-//    QString hexStr = "0123456789ABCDEF";
+    QString hexStr = "UU\x01\x01\x02"; //"0123456789ABCDEF";
 //    QByteArray hex = QByteArray::fromHex(hexStr.toAscii());
 //    int size = hex.size();
 //    for(int i = 0; i < size; ++i){
@@ -97,11 +91,61 @@ void Port :: WriteToPort(QByteArray data){
     ba[2] = 0x01;
     ba[3] = 0x01;
     ba[4] = 0x02;
-    if(thisPort.isOpen()){
-        thisPort.write(ba);
-    }
+
+    QString str1("55");
+    QByteArray array1;
+    // Перегоняем строку в массив байтов
+    array1.append(str1);
+    qDebug() << "array1 =" << array1;
+
+    //QByteArray data_str;
+    //QString DataAsString = QString(ba);
+
+//    if(thisPort.isOpen()){
+//        thisPort.write(ba);
+//    }
+
+
     QByteArray ba_as_hex_string = ba.toHex();
     qDebug() << "ba_as_hex_string ="<<ba_as_hex_string;
+
+    const QString str3 = QLatin1String("AA110011");
+    bool ok;
+    unsigned int parsedValue = str3.toUInt(&ok, 16);
+    if (!ok) {
+        qDebug() << "parsedValue="<<parsedValue;
+        //Parsing failed, handle error here
+    }
+    QString str= "02 FA 7B 3A 64 9D FF CA";
+
+//    QString hexStr = "a1";
+//    QString hexStr = ba.toHex();
+//    QByteArray hex = QByteArray::fromHex(hexStr.toLatin1());
+
+    QString login_str = "55";
+    QByteArray login_ba = login_str.toUtf8();
+    qDebug() << "login_ba = " << login_ba;
+    //hexStr = QString::QString(hexStr);
+
+    QString str4("12");
+        QByteArray array;
+        // Перегоняем строку в массив байтов
+        array.append(str4);
+//    qDebug() << "hex ="<<hex.toHex();
+//    qDebug() << hex[0];
+
+    QString str2("2");
+    QByteArray bytes = str2.toLatin1();
+
+    if(thisPort.isOpen()){
+        thisPort.write(data);
+        pingSend =  QDateTime::currentDateTime();
+        counterCmdWrite += data.length();
+        infoPort(counterCmdRead, counterCmdWrite, ping);
+    }
+
+    QByteArray ba_as_hex_string_write = data.toHex();
+    outPort(ba_as_hex_string_write);
 }
 //
 void Port :: ReadInPort(){
@@ -109,16 +153,13 @@ void Port :: ReadInPort(){
     data.append(thisPort.readAll());
 
     pingRead =  QDateTime::currentDateTime();
-    qDebug()<<"Read = " + pingRead.toString("yyyy/MM/dd hh:mm:ss,zzz");
-    ping = pingRead.toMSecsSinceEpoch()-timePingSend.toMSecsSinceEpoch();
-    qDebug()<<"timeRead = " + QString::number(ping);
-
-//    outPort(data);
+    ping = pingRead.toMSecsSinceEpoch()-pingSend.toMSecsSinceEpoch();
+    qDebug()<<"ping = " + QString::number(ping);
 
     QByteArray ba_as_hex_string = data.toHex();
-    outPort(ba_as_hex_string);
+    outPort(ba_as_hex_string);                  // out string "5555010203"
 
     counterCmdRead += data.length();
-    infoPort(counterCmdRead, 2);
+    infoPort(counterCmdRead, counterCmdWrite, ping);
 }
 

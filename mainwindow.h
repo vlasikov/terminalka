@@ -33,7 +33,13 @@ private slots:
 
     void on_cBtnSend_clicked();
 
-    void sl_infoPort(int, int);
+    void sl_infoPort(int, int, int);
+
+    void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
+
+    void on_pushButton_3_clicked();
 
 private:
     Ui::MainWindow *ui;

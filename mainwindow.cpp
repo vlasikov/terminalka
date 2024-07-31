@@ -10,6 +10,7 @@
 #include <errno.h>
 #include "ui_mainwindow.h"
 #include <QThread>
+#include <qdebug.h>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -63,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(PortNew, SIGNAL(outPort(QString)), this, SLOT(Print(QString)));//Лог ошибок ? ЗАЧЕМ ?
     connect(this,SIGNAL(writeData(QByteArray)),PortNew,SLOT(WriteToPort(QByteArray)));
 
-    connect(PortNew, SIGNAL(infoPort(int, int)), this, SLOT(sl_infoPort(int, int)));
+    connect(PortNew, SIGNAL(infoPort(int, int, int)), this, SLOT(sl_infoPort(int, int, int)));
     thread_New->start();
 }
 //++++++++[Процедура закрытия приложения]+++++++++++++++++++++++++++++++++++++++++++++
@@ -121,7 +122,41 @@ void MainWindow::on_cBtnSend_clicked()
 
 }
 
-void MainWindow::sl_infoPort(int counterPacketRead, int counterPacketWrite)
+void MainWindow::sl_infoPort(int counterPacketRead, int counterPacketWrite, int ping)
 {
     ui->label_4->setText(QString::number(counterPacketRead));
+    ui->label_2->setText(QString::number(counterPacketWrite));
+    ui->label_6->setText(QString::number(ping));
+}
+
+// сохранить положение
+void MainWindow::on_pushButton_clicked()
+{
+    QByteArray ba(5, 0); // array length 5, filled with 0
+    ba[0] = 0x55;
+    ba[1] = 0x55;
+    ba[2] = 0x01;
+    ba[3] = 0x01;
+    ba[4] = 0x02;
+    writeData(ba); // Отправка данных в порт
+}
+
+// номер канала
+void MainWindow::on_pushButton_2_clicked()
+{
+    QByteArray ba(6, 0);
+    ba[0] = 0x55;
+    ba[1] = 0x55;
+    ba[2] = 0x02;
+    ba[3] = 0x02;
+    ba[4] = ui->spinBox->value();
+    ba[5] = ba[2]+ba[3]+ba[4];
+    writeData(ba); // Отправка данных в порт
+}
+
+// сохранить центр
+void MainWindow::on_pushButton_3_clicked()
+{
+    QByteArray ba = QByteArray::fromRawData("\x55\x55\x01\x03\x04", 5);
+    writeData(ba); // Отправка данных в порт
 }

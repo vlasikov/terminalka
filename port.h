@@ -29,8 +29,8 @@ public:
     QSerialPort thisPort;
     Settings SettingsPort;
 
-    QDateTime timePingSend, pingRead;
-    qint64 ping, counterCmdRead;
+    QDateTime pingSend, pingRead;
+    qint64 ping, counterCmdRead, counterCmdWrite;
     QStringList words;
 
 
@@ -42,7 +42,7 @@ signals:
 
     void outPort(QString data);
 
-    void infoPort(int counterPacketRead, int counterPacketWrite);
+    void infoPort(int counterPacketRead, int counterPacketWrite, int ping);
 
 
 

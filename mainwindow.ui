@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>654</width>
-    <height>362</height>
+    <height>419</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -208,7 +208,7 @@
      <item>
       <widget class="QLineEdit" name="cEnterText">
        <property name="text">
-        <string>$55$55$01$01$02</string>
+        <string>\x55\x55\x01\x01\x02</string>
        </property>
       </widget>
      </item>
@@ -230,7 +230,7 @@
       <x>220</x>
       <y>30</y>
       <width>431</width>
-      <height>291</height>
+      <height>251</height>
      </rect>
     </property>
     <property name="readOnly">
@@ -332,6 +332,55 @@
     </property>
     <property name="text">
      <string>0</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>290</y>
+      <width>111</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Сохранить полож</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>320</y>
+      <width>111</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Номер канала</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="spinBox">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>320</y>
+      <width>42</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_3">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>350</y>
+      <width>111</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Сохранить центр</string>
     </property>
    </widget>
   </widget>
