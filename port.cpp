@@ -73,30 +73,30 @@ void Port :: WriteToPort(QByteArray data){
     QStringList cmd = (QString(data)).split(QRegExp("$"), QString::SkipEmptyParts);     // delete $
     qDebug() << "cmd = "<<cmd;
 
-    unsigned short sh = cmd[0][0].unicode();
-    qDebug() << "sh ="<<sh;
-    qDebug() << "cmdList[0] ="<<cmd[0].toUShort();
-    qDebug()<<"timeSend = " + pingSend.toString("yyyy/MM/dd hh:mm:ss,zzz");
+//    unsigned short sh = cmd[0][0].unicode();
+//    qDebug() << "sh ="<<sh;
+//    qDebug() << "cmdList[0] ="<<cmd[0].toUShort();
+//    qDebug()<<"timeSend = " + pingSend.toString("yyyy/MM/dd hh:mm:ss,zzz");
 
-    QString hexStr = "UU\x01\x01\x02"; //"0123456789ABCDEF";
+//    QString hexStr = "UU\x01\x01\x02"; //"0123456789ABCDEF";
 //    QByteArray hex = QByteArray::fromHex(hexStr.toAscii());
 //    int size = hex.size();
 //    for(int i = 0; i < size; ++i){
 //      qDebug() << hex[i] << " ";
 //    }
 
-    QByteArray ba(5, 0); // array length 4, filled with 0
-    ba[0] = 0x55;
-    ba[1] = 0x55;
-    ba[2] = 0x01;
-    ba[3] = 0x01;
-    ba[4] = 0x02;
+//    QByteArray ba(5, 0); // array length 4, filled with 0
+//    ba[0] = 0x55;
+//    ba[1] = 0x55;
+//    ba[2] = 0x01;
+//    ba[3] = 0x01;
+//    ba[4] = 0x02;
 
-    QString str1("55");
-    QByteArray array1;
-    // Перегоняем строку в массив байтов
-    array1.append(str1);
-    qDebug() << "array1 =" << array1;
+//    QString str1("55");
+//    QByteArray array1;
+//    // Перегоняем строку в массив байтов
+//    array1.append(str1);
+//    qDebug() << "array1 =" << array1;
 
     //QByteArray data_str;
     //QString DataAsString = QString(ba);
@@ -106,36 +106,23 @@ void Port :: WriteToPort(QByteArray data){
 //    }
 
 
-    QByteArray ba_as_hex_string = ba.toHex();
-    qDebug() << "ba_as_hex_string ="<<ba_as_hex_string;
+//    QByteArray ba_as_hex_string = ba.toHex();
+//    qDebug() << "ba_as_hex_string ="<<ba_as_hex_string;
 
-    const QString str3 = QLatin1String("AA110011");
-    bool ok;
-    unsigned int parsedValue = str3.toUInt(&ok, 16);
-    if (!ok) {
-        qDebug() << "parsedValue="<<parsedValue;
-        //Parsing failed, handle error here
-    }
-    QString str= "02 FA 7B 3A 64 9D FF CA";
+//    const QString str3 = QLatin1String("AA110011");
+//    bool ok;
+//    unsigned int parsedValue = str3.toUInt(&ok, 16);
+//    if (!ok) {
+//        qDebug() << "parsedValue="<<parsedValue;
+//        //Parsing failed, handle error here
+//    }
+//    QString str= "02 FA 7B 3A 64 9D FF CA";
 
-//    QString hexStr = "a1";
-//    QString hexStr = ba.toHex();
-//    QByteArray hex = QByteArray::fromHex(hexStr.toLatin1());
 
-    QString login_str = "55";
-    QByteArray login_ba = login_str.toUtf8();
-    qDebug() << "login_ba = " << login_ba;
-    //hexStr = QString::QString(hexStr);
-
-    QString str4("12");
-        QByteArray array;
-        // Перегоняем строку в массив байтов
-        array.append(str4);
-//    qDebug() << "hex ="<<hex.toHex();
-//    qDebug() << hex[0];
-
-    QString str2("2");
-    QByteArray bytes = str2.toLatin1();
+//    QString str4("12");
+//        QByteArray array;
+//        // Перегоняем строку в массив байтов
+//        array.append(str4);
 
     if(thisPort.isOpen()){
         thisPort.write(data);

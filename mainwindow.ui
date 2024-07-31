@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>654</width>
+    <width>660</width>
     <height>419</height>
    </rect>
   </property>
@@ -208,7 +208,7 @@
      <item>
       <widget class="QLineEdit" name="cEnterText">
        <property name="text">
-        <string>\x55\x55\x01\x01\x02</string>
+        <string>55,55,01,01,02</string>
        </property>
       </widget>
      </item>

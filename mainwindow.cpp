@@ -96,17 +96,59 @@ void MainWindow::checkCustomBaudRatePolicy(int idx)
 //+++++++++++++[Процедура ввода данных из строки]++++++++++++++++++++++++++++++++++++++++
 void MainWindow::on_cEnterText_returnPressed()
 {
-    QByteArray data; // Текстовая переменная
-    //data = ui->cEnterText->text().toLocal8Bit().toHex(); // Присвоение "data" значения из EnterText
-    data = ui->cEnterText->text().toLocal8Bit(); // Присвоение "data" значения из EnterText
-    writeData(data); // Отправка данных в порт
-    Print(data); // Вывод данных в консоль
+    QByteArray ba;                                // Текстовая переменная
+    ba = ui->cEnterText->text().toLocal8Bit();    // Присвоение "data" значения из EnterText
+    qDebug()<< "ba="<<ba;
+
+//    char *baC = ba.data();
+    QString str0 = ba.data();
+    qDebug()<< "str0="<<str0;
+    QByteArray ba0 = str0.toUtf8();
+    qDebug()<< "ba0="<<ba0;
+
+    QStringList strList = str0.split(QRegExp(","));
+    qDebug() << "strList" <<  strList;
+    bool ok;
+    unsigned int parsedValue = strList[0].toUInt(&ok, 16);
+    qDebug() << "strList[0]" << parsedValue;
+    if (!ok) {
+        //Parsing failed, handle error here
+    }
+
+    QByteArray data = QByteArray::fromHex(ui->cEnterText->text().toUtf8().toHex());
+    qDebug() << data;
+
+    QString str1 = "\x55\x55\x01\x01\x03";
+
+    qDebug()<< "str1="<<str1;
+    QByteArray ba1 = str1.toUtf8();
+    qDebug()<< "ba1="<<ba1;
+    QByteArray ba2 = QByteArray::fromRawData(ba1.data(), 5);
+    qDebug()<< "ba2="<<ba2.data();
+
+    writeData(ba1); // Отправка данных в порт
+    Print(ba1);     // Вывод данных в консоль
+
+//    qDebug()<< "ba="<<ba.data();
+
+//    QByteArray data2;
+//    data2 = QByteArray::fromHex(ui->cEnterText->text().toUtf8().toHex());
+//    qDebug() << data2;
+
+//    data2 = QByteArray::fromHex(ui->cEnterText->text().toUtf8());
+//       data2 = data2.toHex();
+//       qDebug() << data2;
+
+//    writeData(data2); // Отправка данных в порт
+
+//    qDebug() << data;
+
 }
 //+++++++++++++[Процедура вывода данных в консоль]++++++++++++++++++++++++++++++++++++++++
 void MainWindow::Print(QString data)
 {
     ui->consol->textCursor().insertText(data+'\r'); // Вывод текста в консоль
-    ui->consol->moveCursor(QTextCursor::End);//Scroll
+    ui->consol->moveCursor(QTextCursor::End);       //Scroll
 }
 
 void MainWindow::on_BtnSave_clicked()
@@ -132,12 +174,8 @@ void MainWindow::sl_infoPort(int counterPacketRead, int counterPacketWrite, int 
 // сохранить положение
 void MainWindow::on_pushButton_clicked()
 {
-    QByteArray ba(5, 0); // array length 5, filled with 0
-    ba[0] = 0x55;
-    ba[1] = 0x55;
-    ba[2] = 0x01;
-    ba[3] = 0x01;
-    ba[4] = 0x02;
+//    QString s = "\x55\x55\x01\x01\x02";
+    QByteArray ba = QByteArray::fromRawData("\x55\x55\x01\x01\x02", 5);
     writeData(ba); // Отправка данных в порт
 }
 
