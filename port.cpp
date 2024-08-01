@@ -148,5 +148,39 @@ void Port :: ReadInPort(){
 
     counterCmdRead += data.length();
     infoPort(counterCmdRead, counterCmdWrite, ping);
+
+    this->Control();
+}
+
+/* Conrol read packet
+ *
+ */
+int Port :: Control(){
+    QByteArray ba = QByteArray::fromRawData("\x55\x55\x02\x01\x02\x03", 6);
+
+    while(ba.length()>=3){
+        if(ba[0]=='\x55'){      //ok
+            if(ba[1]=='\x55'){
+                qDebug()<<"x55x55-ok";
+                int RxLength = (static_cast<unsigned int>(ba[2]) & 0xFF);
+                qDebug()<<"x55x55-ok, Rx.Length="<<(static_cast<unsigned int>(ba[2]) & 0xFF);
+                if(RxLength <= (ba.length()-4)){
+                    qDebug()<<"read-ok";
+                    qDebug() << "ba =" << ba;
+                    outPort(ba);                  // out string "5555010203"
+                    return 1;
+                }
+            }
+            else{
+                ba.remove(0, 2);        // Removes first n
+                qDebug()<<"delete 0,1";
+            }
+        }
+        else{
+            ba.remove(0, 1);            // Removes first n
+            qDebug()<<"delete 0";
+        }
+    }
+//    return 1;
 }
 

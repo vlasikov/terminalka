@@ -45,6 +45,8 @@ signals:
     void infoPort(int counterPacketRead, int counterPacketWrite, int ping);
 
 
+private:
+    int Control();
 
 public slots:
 
@@ -63,8 +65,6 @@ public slots:
 private slots:
 
     void handleError(QSerialPort::SerialPortError error);//
-
-public:
 
 };
 
