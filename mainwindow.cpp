@@ -101,47 +101,49 @@ void MainWindow::on_cEnterText_returnPressed()
     qDebug()<< "ba="<<ba;
 
 //    char *baC = ba.data();
-    QString str0 = ba.data();
-    qDebug()<< "str0="<<str0;
-    QByteArray ba0 = str0.toUtf8();
-    qDebug()<< "ba0="<<ba0;
+//    QString str0 = ba.data();
+//    qDebug()<< "str0="<<str0;
+//    QByteArray ba0 = str0.toUtf8();
+//    qDebug()<< "ba0="<<ba0;
 
-    QStringList strList = str0.split(QRegExp(","));
-    qDebug() << "strList" <<  strList;
-    bool ok;
-    unsigned int parsedValue = strList[0].toUInt(&ok, 16);
-    qDebug() << "strList[0]" << parsedValue;
-    if (!ok) {
-        //Parsing failed, handle error here
-    }
+//    QStringList strList = str0.split(QRegExp(","));
+//    qDebug() << "strList=" <<  strList;
+//    QByteArray  baList  = str0.split(QRegExp(","));
 
-    QByteArray data = QByteArray::fromHex(ui->cEnterText->text().toUtf8().toHex());
-    qDebug() << data;
+//    bool ok;
+//    QString str;
+//    QByteArray ba3;
+//    qDebug() << "foreach";
+//    foreach (str, strList)
+//    {
+//        qDebug() << str.toUInt(&ok, 16);
+//        //ba3.append(str.toUtf8().toHex());
+//        str = "55";
+//        ba3.append(str);
+//    }
+//    qDebug()<< "ba3="<<ba3.data();
 
-    QString str1 = "\x55\x55\x01\x01\x03";
+    QByteArray text = QByteArray::fromHex(ba);
+//    qDebug() <<"text="<< text.data();            // returns "Qt is great!"
 
-    qDebug()<< "str1="<<str1;
-    QByteArray ba1 = str1.toUtf8();
-    qDebug()<< "ba1="<<ba1;
-    QByteArray ba2 = QByteArray::fromRawData(ba1.data(), 5);
-    qDebug()<< "ba2="<<ba2.data();
+//    if (!ok) {
+//        qDebug() << "Parsing failed, handle error here";
+//    }
 
-    writeData(ba1); // Отправка данных в порт
-    Print(ba1);     // Вывод данных в консоль
+//    QByteArray data = QByteArray::fromHex(ui->cEnterText->text().toUtf8().toHex());
+//    qDebug() <<"data="<< data;
 
-//    qDebug()<< "ba="<<ba.data();
+//    QString str1 = "\x55\x55\x01\x01\x03";
 
-//    QByteArray data2;
-//    data2 = QByteArray::fromHex(ui->cEnterText->text().toUtf8().toHex());
-//    qDebug() << data2;
+//    qDebug()<< "str1="<<str1;
+//    QByteArray ba1 = str1.toUtf8();
+//    qDebug()<< "ba1="<<ba1;
+//    QByteArray ba2 = QByteArray::fromRawData(ba1.data(), 5);
+//    qDebug()<< "ba2="<<ba2.data();
 
-//    data2 = QByteArray::fromHex(ui->cEnterText->text().toUtf8());
-//       data2 = data2.toHex();
-//       qDebug() << data2;
+    writeData(text); // Отправка данных в порт
+//    Print(ba1);     // Вывод данных в консоль
 
-//    writeData(data2); // Отправка данных в порт
-
-//    qDebug() << data;
 
 }
 //+++++++++++++[Процедура вывода данных в консоль]++++++++++++++++++++++++++++++++++++++++
