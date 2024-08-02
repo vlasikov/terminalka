@@ -73,57 +73,6 @@ void Port :: WriteToPort(QByteArray data){
     QStringList cmd = (QString(data)).split(QRegExp("$"), QString::SkipEmptyParts);     // delete $
     qDebug() << "cmd = "<<cmd;
 
-//    unsigned short sh = cmd[0][0].unicode();
-//    qDebug() << "sh ="<<sh;
-//    qDebug() << "cmdList[0] ="<<cmd[0].toUShort();
-//    qDebug()<<"timeSend = " + pingSend.toString("yyyy/MM/dd hh:mm:ss,zzz");
-
-//    QString hexStr = "UU\x01\x01\x02"; //"0123456789ABCDEF";
-//    QByteArray hex = QByteArray::fromHex(hexStr.toAscii());
-//    int size = hex.size();
-//    for(int i = 0; i < size; ++i){
-//      qDebug() << hex[i] << " ";
-//    }
-
-//    QByteArray ba(5, 0); // array length 4, filled with 0
-//    ba[0] = 0x55;
-//    ba[1] = 0x55;
-//    ba[2] = 0x01;
-//    ba[3] = 0x01;
-//    ba[4] = 0x02;
-
-//    QString str1("55");
-//    QByteArray array1;
-//    // Перегоняем строку в массив байтов
-//    array1.append(str1);
-//    qDebug() << "array1 =" << array1;
-
-    //QByteArray data_str;
-    //QString DataAsString = QString(ba);
-
-//    if(thisPort.isOpen()){
-//        thisPort.write(ba);
-//    }
-
-
-//    QByteArray ba_as_hex_string = ba.toHex();
-//    qDebug() << "ba_as_hex_string ="<<ba_as_hex_string;
-
-//    const QString str3 = QLatin1String("AA110011");
-//    bool ok;
-//    unsigned int parsedValue = str3.toUInt(&ok, 16);
-//    if (!ok) {
-//        qDebug() << "parsedValue="<<parsedValue;
-//        //Parsing failed, handle error here
-//    }
-//    QString str= "02 FA 7B 3A 64 9D FF CA";
-
-
-//    QString str4("12");
-//        QByteArray array;
-//        // Перегоняем строку в массив байтов
-//        array.append(str4);
-
     if(thisPort.isOpen()){
         thisPort.write(data);
         pingSend =  QDateTime::currentDateTime();
@@ -132,7 +81,7 @@ void Port :: WriteToPort(QByteArray data){
     }
 
     QByteArray ba_as_hex_string_write = data.toHex();
-    outPort(ba_as_hex_string_write);
+    outPort("TX "+ba_as_hex_string_write);
 }
 //
 void Port :: ReadInPort(){
@@ -144,43 +93,48 @@ void Port :: ReadInPort(){
     qDebug()<<"ping = " + QString::number(ping);
 
     QByteArray ba_as_hex_string = data.toHex();
-    outPort(ba_as_hex_string);                  // out string "5555010203"
 
     counterCmdRead += data.length();
     infoPort(counterCmdRead, counterCmdWrite, ping);
 
+    BufRx.append(data);
     this->Control();
 }
 
 /* Conrol read packet
  *
  */
-int Port :: Control(){
-    QByteArray ba = QByteArray::fromRawData("\x55\x55\x02\x01\x02\x03", 6);
 
-    while(ba.length()>=3){
-        if(ba[0]=='\x55'){      //ok
-            if(ba[1]=='\x55'){
-                qDebug()<<"x55x55-ok";
-                int RxLength = (static_cast<unsigned int>(ba[2]) & 0xFF);
-                qDebug()<<"x55x55-ok, Rx.Length="<<(static_cast<unsigned int>(ba[2]) & 0xFF);
-                if(RxLength <= (ba.length()-4)){
-                    qDebug()<<"read-ok";
-                    qDebug() << "ba =" << ba;
-                    outPort(ba);                  // out string "5555010203"
+int Port :: Control(){
+    while(BufRx.length()>=3){
+        qDebug()<<"Ctrl ba ="<<BufRx.toHex();
+        if(BufRx[0]=='\x55'){      //ok
+            if(BufRx[1]=='\x55'){
+                int RxLength = (static_cast<unsigned int>(BufRx[2]) & 0xFF);
+
+                if(RxLength <= (BufRx.length()-4)){ // bytes [0], [1], [2] and crc
+                    qDebug() << "read raw=" << BufRx;
+                    QByteArray ba_as_hex_string = BufRx.toHex();
+                    outPort("RX "+ba_as_hex_string);                  // out string "5555010203"
+                    BufRx.remove(0, RxLength+4);
+                    qDebug()<<"BufRx " << BufRx;
                     return 1;
+                }
+                else{
+                    qDebug()<<"Rx Length error";
+                    return 0;               // Rx Length error
                 }
             }
             else{
-                ba.remove(0, 2);        // Removes first n
+                BufRx.remove(0, 2);        // Removes first n
                 qDebug()<<"delete 0,1";
             }
         }
         else{
-            ba.remove(0, 1);            // Removes first n
+            BufRx.remove(0, 1);            // Removes first n
             qDebug()<<"delete 0";
         }
     }
-//    return 1;
+    return 0;
 }
 

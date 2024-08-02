@@ -28,6 +28,7 @@ public:
 
     QSerialPort thisPort;
     Settings SettingsPort;
+    QByteArray BufRx;
 
     QDateTime pingSend, pingRead;
     qint64 ping, counterCmdRead, counterCmdWrite;
