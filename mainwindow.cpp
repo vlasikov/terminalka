@@ -65,12 +65,16 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this,SIGNAL(writeData(QByteArray)),PortNew,SLOT(WriteToPort(QByteArray)));
 
     connect(PortNew, SIGNAL(infoPort(int, int, int)), this, SLOT(sl_infoPort(int, int, int)));
+    connect(&m_timer, SIGNAL( timeout() ),PortNew, SLOT( slTimer() ) );
+
     thread_New->start();
+
+    m_timer.start( 1000 ); // слот в Port->slTimer
 }
+
 //++++++++[Процедура закрытия приложения]+++++++++++++++++++++++++++++++++++++++++++++
 MainWindow::~MainWindow()
 {
-
     delete ui; //Удаление формы
 }
 
@@ -100,46 +104,7 @@ void MainWindow::on_cEnterText_returnPressed()
     ba = ui->cEnterText->text().toLocal8Bit();    // Присвоение "data" значения из EnterText
     qDebug()<< "ba="<<ba;
 
-//    char *baC = ba.data();
-//    QString str0 = ba.data();
-//    qDebug()<< "str0="<<str0;
-//    QByteArray ba0 = str0.toUtf8();
-//    qDebug()<< "ba0="<<ba0;
-
-//    QStringList strList = str0.split(QRegExp(","));
-//    qDebug() << "strList=" <<  strList;
-//    QByteArray  baList  = str0.split(QRegExp(","));
-
-//    bool ok;
-//    QString str;
-//    QByteArray ba3;
-//    qDebug() << "foreach";
-//    foreach (str, strList)
-//    {
-//        qDebug() << str.toUInt(&ok, 16);
-//        //ba3.append(str.toUtf8().toHex());
-//        str = "55";
-//        ba3.append(str);
-//    }
-//    qDebug()<< "ba3="<<ba3.data();
-
     QByteArray text = QByteArray::fromHex(ba);
-//    qDebug() <<"text="<< text.data();            // returns "Qt is great!"
-
-//    if (!ok) {
-//        qDebug() << "Parsing failed, handle error here";
-//    }
-
-//    QByteArray data = QByteArray::fromHex(ui->cEnterText->text().toUtf8().toHex());
-//    qDebug() <<"data="<< data;
-
-//    QString str1 = "\x55\x55\x01\x01\x03";
-
-//    qDebug()<< "str1="<<str1;
-//    QByteArray ba1 = str1.toUtf8();
-//    qDebug()<< "ba1="<<ba1;
-//    QByteArray ba2 = QByteArray::fromRawData(ba1.data(), 5);
-//    qDebug()<< "ba2="<<ba2.data();
 
     writeData(text); // Отправка данных в порт
 //    Print(ba1);     // Вывод данных в консоль
@@ -176,7 +141,6 @@ void MainWindow::sl_infoPort(int counterPacketRead, int counterPacketWrite, int 
 // сохранить положение
 void MainWindow::on_pushButton_clicked()
 {
-//    QString s = "\x55\x55\x01\x01\x02";
     QByteArray ba = QByteArray::fromRawData("\x55\x55\x01\x01\x02", 5);
     writeData(ba); // Отправка данных в порт
 }

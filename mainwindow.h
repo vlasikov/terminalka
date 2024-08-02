@@ -4,7 +4,9 @@
 #include <QMainWindow>
 #include <QtSerialPort/QSerialPort>
 #include <QtSerialPort/QSerialPortInfo>
+#include <QTimer>
 #include "port.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -15,9 +17,10 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-
+    explicit MainWindow(QWidget *parent = 0);    
     ~MainWindow();
+
+    QTimer m_timer;
 
 signals:
 
@@ -45,7 +48,6 @@ private:
     Ui::MainWindow *ui;
 
     Port PortNew;//
-
 };
 
 #endif // MAINWINDOW_H

@@ -5,6 +5,7 @@
 #include <QtSerialPort/QSerialPort>
 #include <QtSerialPort/QSerialPortInfo>
 #include <QDateTime>
+//#include <QTimer>
 #include <QStringList>
 
 struct Settings {
@@ -29,6 +30,7 @@ public:
     QSerialPort thisPort;
     Settings SettingsPort;
     QByteArray BufRx;
+    QByteArray LastTx;
 
     QDateTime pingSend, pingRead;
     qint64 ping, counterCmdRead, counterCmdWrite;
@@ -63,9 +65,12 @@ public slots:
 
     void ReadInPort();
 
+    void slTimer();
+
 private slots:
 
     void handleError(QSerialPort::SerialPortError error);//
+//    void slTimer();
 
 };
 

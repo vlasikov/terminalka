@@ -4,8 +4,11 @@
 Port::Port(QObject *parent) :
     QObject(parent)
 {
+    qDebug()<<"Port::Port";
     counterCmdRead = 0;
     counterCmdWrite = 0;
+
+//    m_timer.start( 1000 ); // Таймер будет срабатывать каждые 1000 миллисекунд, т.е. каждую секунду
 }
 
 Port::~Port()
@@ -67,9 +70,11 @@ void  Port::DisconnectPort(){
         error_(SettingsPort.name.toLocal8Bit() + " >> Закрыт!\r");
     }
 }
-//ot tuta kovuratji!!!
+
+//
 void Port :: WriteToPort(QByteArray data){
     qDebug() << "data ="<<data;
+    LastTx = data;
     QStringList cmd = (QString(data)).split(QRegExp("$"), QString::SkipEmptyParts);     // delete $
     qDebug() << "cmd = "<<cmd;
 
@@ -82,7 +87,10 @@ void Port :: WriteToPort(QByteArray data){
 
     QByteArray ba_as_hex_string_write = data.toHex();
     outPort("TX "+ba_as_hex_string_write);
+
+//    m_timer.start( 5000 ); // Таймер будет срабатывать каждые 1000 миллисекунд, т.е. каждую секунду
 }
+
 //
 void Port :: ReadInPort(){
     QByteArray data;
@@ -99,12 +107,13 @@ void Port :: ReadInPort(){
 
     BufRx.append(data);
     this->Control();
+
+//    m_timer.start( 5000 ); // Таймер будет срабатывать каждые 1000 миллисекунд, т.е. каждую секунду
 }
 
 /* Conrol read packet
  *
  */
-
 int Port :: Control(){
     while(BufRx.length()>=3){
         qDebug()<<"Ctrl ba ="<<BufRx.toHex();
@@ -137,4 +146,15 @@ int Port :: Control(){
     }
     return 0;
 }
+
+void Port :: slTimer(){
+    QByteArray ba = QByteArray::fromRawData("\x55\x55\x01\x03\x04", 5);
+    qDebug()<<"slTimer LastTx"<<LastTx.toHex();
+
+    if(ba == LastTx)
+        qDebug()<<"SendOk";
+    else
+        qDebug()<<"SendError";
+}
+
 
