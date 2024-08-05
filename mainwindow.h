@@ -26,6 +26,7 @@ signals:
 
     void savesettings(QString name, int baudrate, int DataBits, int Parity, int StopBits, int FlowControl);
     void writeData(QByteArray data);
+    void sgnParamWrite(int n);
 
 private slots:
     void on_Btn_Serch_clicked();
@@ -44,10 +45,10 @@ private slots:
 
     void on_pushButton_3_clicked();
 
+    void slTimerStop();
+
 private:
     Ui::MainWindow *ui;
-
-    Port PortNew;//
 };
 
 #endif // MAINWINDOW_H

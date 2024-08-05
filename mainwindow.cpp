@@ -65,11 +65,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this,SIGNAL(writeData(QByteArray)),PortNew,SLOT(WriteToPort(QByteArray)));
 
     connect(PortNew, SIGNAL(infoPort(int, int, int)), this, SLOT(sl_infoPort(int, int, int)));
-    connect(&m_timer, SIGNAL( timeout() ),PortNew, SLOT( slTimer() ) );
+    connect(&m_timer, SIGNAL(timeout()),PortNew, SLOT( slTimer() ) );
+    connect(PortNew, SIGNAL(sqnTimerStop()),this, SLOT(slTimerStop()));
+    connect(this,SIGNAL(sgnParamWrite(int )),PortNew,SLOT(slParamWrite(int)));
 
     thread_New->start();
-
-    m_timer.start( 1000 ); // слот в Port->slTimer
 }
 
 //++++++++[Процедура закрытия приложения]+++++++++++++++++++++++++++++++++++++++++++++
@@ -143,6 +143,8 @@ void MainWindow::on_pushButton_clicked()
 {
     QByteArray ba = QByteArray::fromRawData("\x55\x55\x01\x01\x02", 5);
     writeData(ba); // Отправка данных в порт
+    sgnParamWrite(ui->spinBox_3->value());
+    m_timer.start( ui->spinBox_2->value() );    // слот в Port->slTimer
 }
 
 // номер канала
@@ -156,11 +158,22 @@ void MainWindow::on_pushButton_2_clicked()
     ba[4] = ui->spinBox->value();
     ba[5] = ba[2]+ba[3]+ba[4];
     writeData(ba); // Отправка данных в порт
+    sgnParamWrite(ui->spinBox_3->value());
+    m_timer.start( ui->spinBox_2->value() );    // слот в Port->slTimer
 }
 
 // сохранить центр
 void MainWindow::on_pushButton_3_clicked()
 {
     QByteArray ba = QByteArray::fromRawData("\x55\x55\x01\x03\x04", 5);
-    writeData(ba); // Отправка данных в порт
+    writeData(ba);                              // Отправка данных в порт
+    sgnParamWrite(ui->spinBox_3->value());
+    m_timer.start( ui->spinBox_2->value() );    // слот в Port->slTimer
+}
+
+//
+void MainWindow::slTimerStop()
+{
+    m_timer.stop();
+    qDebug()<< "timer stop";
 }

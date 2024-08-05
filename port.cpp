@@ -7,8 +7,7 @@ Port::Port(QObject *parent) :
     qDebug()<<"Port::Port";
     counterCmdRead = 0;
     counterCmdWrite = 0;
-
-//    m_timer.start( 1000 ); // Таймер будет срабатывать каждые 1000 миллисекунд, т.е. каждую секунду
+    errorRead = 0;
 }
 
 Port::~Port()
@@ -75,7 +74,7 @@ void  Port::DisconnectPort(){
 void Port :: WriteToPort(QByteArray data){
     qDebug() << "data ="<<data;
     LastTx = data;
-    QStringList cmd = (QString(data)).split(QRegExp("$"), QString::SkipEmptyParts);     // delete $
+    QStringList cmd = (QString(data)).split(QRegExp("$"), QString::SkipEmptyParts); // delete $
     qDebug() << "cmd = "<<cmd;
 
     if(thisPort.isOpen()){
@@ -83,12 +82,16 @@ void Port :: WriteToPort(QByteArray data){
         pingSend =  QDateTime::currentDateTime();
         counterCmdWrite += data.length();
         infoPort(counterCmdRead, counterCmdWrite, ping);
+        sqnTimerStart();                                                            // запускаем таймер для повторного отправления, при отсутствии связи
+
+        QByteArray ba_as_hex_string_write = data.toHex();
+        outPort("TX "+ba_as_hex_string_write);
+    }
+    else{
+        outPort("Port close");
     }
 
-    QByteArray ba_as_hex_string_write = data.toHex();
-    outPort("TX "+ba_as_hex_string_write);
-
-//    m_timer.start( 5000 ); // Таймер будет срабатывать каждые 1000 миллисекунд, т.е. каждую секунду
+//    errorRead = 0;
 }
 
 //
@@ -107,8 +110,6 @@ void Port :: ReadInPort(){
 
     BufRx.append(data);
     this->Control();
-
-//    m_timer.start( 5000 ); // Таймер будет срабатывать каждые 1000 миллисекунд, т.е. каждую секунду
 }
 
 /* Conrol read packet
@@ -121,26 +122,27 @@ int Port :: Control(){
             if(BufRx[1]=='\x55'){
                 int RxLength = (static_cast<unsigned int>(BufRx[2]) & 0xFF);
 
-                if(RxLength <= (BufRx.length()-4)){ // bytes [0], [1], [2] and crc
+                if(RxLength <= (BufRx.length()-4)){             // bytes [0], [1], [2] and crc
                     qDebug() << "read raw=" << BufRx;
+                    LastRx = BufRx;                             // запоминаем последнее сообщение
                     QByteArray ba_as_hex_string = BufRx.toHex();
-                    outPort("RX "+ba_as_hex_string);                  // out string "5555010203"
+                    outPort("  RX "+ba_as_hex_string);            // out string "5555010203"
                     BufRx.remove(0, RxLength+4);
                     qDebug()<<"BufRx " << BufRx;
                     return 1;
                 }
                 else{
                     qDebug()<<"Rx Length error";
-                    return 0;               // Rx Length error
+                    return 0;                                   // Rx Length error
                 }
             }
             else{
-                BufRx.remove(0, 2);        // Removes first n
+                BufRx.remove(0, 2);                             // Removes first n
                 qDebug()<<"delete 0,1";
             }
         }
         else{
-            BufRx.remove(0, 1);            // Removes first n
+            BufRx.remove(0, 1);                                 // Removes first n
             qDebug()<<"delete 0";
         }
     }
@@ -148,13 +150,31 @@ int Port :: Control(){
 }
 
 void Port :: slTimer(){
-    QByteArray ba = QByteArray::fromRawData("\x55\x55\x01\x03\x04", 5);
     qDebug()<<"slTimer LastTx"<<LastTx.toHex();
+    qDebug()<<"slTimer LastRx"<<LastRx.toHex();
 
-    if(ba == LastTx)
+    if(LastRx == LastTx){
         qDebug()<<"SendOk";
-    else
-        qDebug()<<"SendError";
+        sqnTimerStop();
+    }
+    else{
+        qDebug()<<"errorRead=" << errorRead;
+        qDebug()<<"errorReadMax=" << errorReadMax;
+        errorRead++;
+        WriteToPort(LastTx);
+
+        if(errorRead>=(errorReadMax-1)){
+            outPort("  RX ERROR  ");
+            sqnTimerStop();
+        }
+    }
+    LastRx.clear();
+}
+
+void Port::slParamWrite(int n){
+    errorReadMax = n;
+    errorRead = 0;
+    qDebug()<<"errorReadMax = "<<errorReadMax;
 }
 
 
