@@ -58,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(PortNew, SIGNAL(finished_Port()), thread_New, SLOT(quit()));    //Переназначение метода выход
     connect(thread_New, SIGNAL(finished()), PortNew, SLOT(deleteLater()));  //Удалить к чертям поток
     connect(PortNew, SIGNAL(finished_Port()), thread_New, SLOT(deleteLater()));//Удалить к чертям поток
-    connect(this,SIGNAL(savesettings(QString,int,int,int,int,int)),PortNew,SLOT(Write_Settings_Port(QString,int,int,int,int,int)));//Слот - ввод настроек! (QString name, int baudrate,int DataBits, int Parity,int StopBits, int FlowControl)
+    connect(this,SIGNAL(savesettings(QString,int,int,int,int,int)),PortNew,SLOT(Write_Settings_Port(QString,int,int,int,int,int)));//Слот - ввод настроек!
 //    connect(ui->BtnConnect, SIGNAL(clicked()),PortNew,SLOT(ConnectPort()));
     connect(ui->BtnDisconect, SIGNAL(clicked()),PortNew,SLOT(DisconnectPort()));
     connect(PortNew, SIGNAL(outPort(QString)), this, SLOT(Print(QString))); //Лог ошибок ? ЗАЧЕМ ?
@@ -168,6 +168,21 @@ void MainWindow::on_pushButton_3_clicked()
     QByteArray ba = QByteArray::fromRawData("\x55\x55\x01\x03\x04", 5);
     writeData(ba);                            // Отправка данных в порт
     sgnParamWrite(ui->spinBox_3->value());
+    m_timer.start(ui->spinBox_2->value());    // слот в Port->slTimer
+}
+
+// реверс
+void MainWindow::on_pushButton_4_clicked()
+{
+    QByteArray ba(6, 0);
+    ba[0] = 0x55;
+    ba[1] = 0x55;
+    ba[2] = 0x04;
+    ba[3] = 0x02;
+    ba[4] = (ui->checkBox_4->isChecked()<<3) | (ui->checkBox_3->isChecked()<<2) | (ui->checkBox_2->isChecked()<<1) | ui->checkBox->isChecked();
+    ba[5] = ba[2]+ba[3]+ba[4];
+    writeData(ba); // Отправка данных в порт
+    sgnParamWrite(ui->spinBox_3->value());    // max error RX
     m_timer.start(ui->spinBox_2->value());    // слот в Port->slTimer
 }
 
