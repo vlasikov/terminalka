@@ -30,12 +30,14 @@ void Port :: Write_Settings_Port(QString name, int baudrate,int DataBits,
     SettingsPort.parity = (QSerialPort::Parity) Parity;
     SettingsPort.stopBits = (QSerialPort::StopBits) StopBits;
     SettingsPort.flowControl = (QSerialPort::FlowControl) FlowControl;
+
+    ConnectPort();
 }
 
 void Port :: ConnectPort(void){//
     thisPort.setPortName(SettingsPort.name);
     if (thisPort.open(QIODevice::ReadWrite)) {
-        if (thisPort.setBaudRate(SettingsPort.baudRate)
+        if (       thisPort.setBaudRate(SettingsPort.baudRate)
                 && thisPort.setDataBits(SettingsPort.dataBits)//DataBits
                 && thisPort.setParity(SettingsPort.parity)
                 && thisPort.setStopBits(SettingsPort.stopBits)
@@ -72,10 +74,7 @@ void  Port::DisconnectPort(){
 
 //
 void Port :: WriteToPort(QByteArray data){
-    qDebug() << "data ="<<data;
     LastTx = data;
-    QStringList cmd = (QString(data)).split(QRegExp("$"), QString::SkipEmptyParts); // delete $
-    qDebug() << "cmd = "<<cmd;
 
     if(thisPort.isOpen()){
         thisPort.write(data);
@@ -88,10 +87,8 @@ void Port :: WriteToPort(QByteArray data){
         outPort("TX "+ba_as_hex_string_write);
     }
     else{
-        outPort("Port close");
+        outPort("ERROR: Port close.");
     }
-
-//    errorRead = 0;
 }
 
 //
@@ -126,7 +123,7 @@ int Port :: Control(){
                     qDebug() << "read raw=" << BufRx;
                     LastRx = BufRx;                             // запоминаем последнее сообщение
                     QByteArray ba_as_hex_string = BufRx.toHex();
-                    outPort("  RX "+ba_as_hex_string);            // out string "5555010203"
+                    outPort("  RX "+ba_as_hex_string);          // out string "5555010203"
                     BufRx.remove(0, RxLength+4);
                     qDebug()<<"BufRx " << BufRx;
                     return 1;

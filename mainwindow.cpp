@@ -49,19 +49,19 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->FlowControlBox->addItem(QLatin1String("XON/XOFF"), QSerialPort::SoftwareControl);
     connect(ui->cBtnSend,SIGNAL(clicked()),this, SLOT(on_cEnterText_returnPressed()) );
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    QThread *thread_New = new QThread;//Создаем поток для порта платы
-    Port *PortNew = new Port();//Создаем обьект по классу
-    PortNew->moveToThread(thread_New);//помешаем класс  в поток
-    PortNew->thisPort.moveToThread(thread_New);//Помещаем сам порт в поток
-    connect(PortNew, SIGNAL(error_(QString)), this, SLOT(Print(QString)));//Лог ошибок
-    connect(thread_New, SIGNAL(started()), PortNew, SLOT(process_Port()));//Переназначения метода run
-    connect(PortNew, SIGNAL(finished_Port()), thread_New, SLOT(quit()));//Переназначение метода выход
-    connect(thread_New, SIGNAL(finished()), PortNew, SLOT(deleteLater()));//Удалить к чертям поток
+    QThread *thread_New = new QThread;                                      //Создаем поток для порта платы
+    Port *PortNew = new Port();                                             //Создаем обьект по классу
+    PortNew->moveToThread(thread_New);                                      //помешаем класс  в поток
+    PortNew->thisPort.moveToThread(thread_New);                             //Помещаем сам порт в поток
+    connect(PortNew, SIGNAL(error_(QString)), this, SLOT(Print(QString)));  //Лог ошибок
+    connect(thread_New, SIGNAL(started()), PortNew, SLOT(process_Port()));  //Переназначения метода run
+    connect(PortNew, SIGNAL(finished_Port()), thread_New, SLOT(quit()));    //Переназначение метода выход
+    connect(thread_New, SIGNAL(finished()), PortNew, SLOT(deleteLater()));  //Удалить к чертям поток
     connect(PortNew, SIGNAL(finished_Port()), thread_New, SLOT(deleteLater()));//Удалить к чертям поток
-    connect(this,SIGNAL(savesettings(QString,int,int,int,int,int)),PortNew,SLOT(Write_Settings_Port(QString,int,int,int,int,int)));//Слот - ввод настроек!
-    connect(ui->BtnConnect, SIGNAL(clicked()),PortNew,SLOT(ConnectPort()));
+    connect(this,SIGNAL(savesettings(QString,int,int,int,int,int)),PortNew,SLOT(Write_Settings_Port(QString,int,int,int,int,int)));//Слот - ввод настроек! (QString name, int baudrate,int DataBits, int Parity,int StopBits, int FlowControl)
+//    connect(ui->BtnConnect, SIGNAL(clicked()),PortNew,SLOT(ConnectPort()));
     connect(ui->BtnDisconect, SIGNAL(clicked()),PortNew,SLOT(DisconnectPort()));
-    connect(PortNew, SIGNAL(outPort(QString)), this, SLOT(Print(QString)));//Лог ошибок ? ЗАЧЕМ ?
+    connect(PortNew, SIGNAL(outPort(QString)), this, SLOT(Print(QString))); //Лог ошибок ? ЗАЧЕМ ?
     connect(this,SIGNAL(writeData(QByteArray)),PortNew,SLOT(WriteToPort(QByteArray)));
 
     connect(PortNew, SIGNAL(infoPort(int, int, int)), this, SLOT(sl_infoPort(int, int, int)));
@@ -100,14 +100,13 @@ void MainWindow::checkCustomBaudRatePolicy(int idx)
 //+++++++++++++[Процедура ввода данных из строки]++++++++++++++++++++++++++++++++++++++++
 void MainWindow::on_cEnterText_returnPressed()
 {
-    QByteArray ba;                                // Текстовая переменная
-    ba = ui->cEnterText->text().toLocal8Bit();    // Присвоение "data" значения из EnterText
+    QByteArray ba;                                  // Текстовая переменная
+    ba = ui->cEnterText->text().toLocal8Bit();      // Присвоение "data" значения из EnterText
     qDebug()<< "ba="<<ba;
 
     QByteArray text = QByteArray::fromHex(ba);
 
-    writeData(text); // Отправка данных в порт
-//    Print(ba1);     // Вывод данных в консоль
+    writeData(text);                                // Отправка данных в порт
 
 
 }
@@ -121,9 +120,10 @@ void MainWindow::Print(QString data)
 void MainWindow::on_BtnSave_clicked()
 {
 
-savesettings(ui->PortNameBox->currentText(), ui->BaudRateBox->currentText().toInt(),ui->DataBitsBox->currentText().toInt(),
-             ui->ParityBox->currentText().toInt(), ui->StopBitsBox->currentText().toInt(), ui->FlowControlBox->currentText().toInt());
+//savesettings(ui->PortNameBox->currentText(), ui->BaudRateBox->currentText().toInt(),ui->DataBitsBox->currentText().toInt(),
+//             ui->ParityBox->currentText().toInt(), ui->StopBitsBox->currentText().toInt(), ui->FlowControlBox->currentText().toInt());
 
+    savesettings(ui->PortNameBox->currentText(), 57600, 8, 0, 1, 0);
 }
 
 void MainWindow::on_cBtnSend_clicked()
@@ -142,9 +142,9 @@ void MainWindow::sl_infoPort(int counterPacketRead, int counterPacketWrite, int 
 void MainWindow::on_pushButton_clicked()
 {
     QByteArray ba = QByteArray::fromRawData("\x55\x55\x01\x01\x02", 5);
-    writeData(ba); // Отправка данных в порт
+    writeData(ba);                            // Отправка данных в порт
     sgnParamWrite(ui->spinBox_3->value());
-    m_timer.start( ui->spinBox_2->value() );    // слот в Port->slTimer
+    m_timer.start(ui->spinBox_2->value());    // слот в Port->slTimer
 }
 
 // номер канала
@@ -159,16 +159,16 @@ void MainWindow::on_pushButton_2_clicked()
     ba[5] = ba[2]+ba[3]+ba[4];
     writeData(ba); // Отправка данных в порт
     sgnParamWrite(ui->spinBox_3->value());
-    m_timer.start( ui->spinBox_2->value() );    // слот в Port->slTimer
+    m_timer.start(ui->spinBox_2->value());    // слот в Port->slTimer
 }
 
 // сохранить центр
 void MainWindow::on_pushButton_3_clicked()
 {
     QByteArray ba = QByteArray::fromRawData("\x55\x55\x01\x03\x04", 5);
-    writeData(ba);                              // Отправка данных в порт
+    writeData(ba);                            // Отправка данных в порт
     sgnParamWrite(ui->spinBox_3->value());
-    m_timer.start( ui->spinBox_2->value() );    // слот в Port->slTimer
+    m_timer.start(ui->spinBox_2->value());    // слот в Port->slTimer
 }
 
 //
@@ -176,4 +176,9 @@ void MainWindow::slTimerStop()
 {
     m_timer.stop();
     qDebug()<< "timer stop";
+}
+
+void MainWindow::on_BtnConnect_clicked()
+{
+
 }

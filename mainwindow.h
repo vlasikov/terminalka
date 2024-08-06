@@ -47,6 +47,8 @@ private slots:
 
     void slTimerStop();
 
+    void on_BtnConnect_clicked();
+
 private:
     Ui::MainWindow *ui;
 };
