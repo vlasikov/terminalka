@@ -177,8 +177,8 @@ void MainWindow::on_pushButton_4_clicked()
     QByteArray ba(6, 0);
     ba[0] = 0x55;
     ba[1] = 0x55;
-    ba[2] = 0x04;
-    ba[3] = 0x02;
+    ba[2] = 0x02;
+    ba[3] = 0x04;
     ba[4] = (ui->checkBox_4->isChecked()<<3) | (ui->checkBox_3->isChecked()<<2) | (ui->checkBox_2->isChecked()<<1) | ui->checkBox->isChecked();
     ba[5] = ba[2]+ba[3]+ba[4];
     writeData(ba); // Отправка данных в порт
