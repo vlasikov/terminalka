@@ -47,7 +47,7 @@ private slots:
 
     void slTimerStop();
 
-    void on_BtnConnect_clicked();
+//    void on_BtnConnect_clicked();
 
     void on_pushButton_4_clicked();
 

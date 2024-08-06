@@ -181,19 +181,18 @@ void MainWindow::on_pushButton_4_clicked()
     ba[3] = 0x04;
     ba[4] = (ui->checkBox_4->isChecked()<<3) | (ui->checkBox_3->isChecked()<<2) | (ui->checkBox_2->isChecked()<<1) | ui->checkBox->isChecked();
     ba[5] = ba[2]+ba[3]+ba[4];
-    writeData(ba); // Отправка данных в порт
-    sgnParamWrite(ui->spinBox_3->value());    // max error RX
-    m_timer.start(ui->spinBox_2->value());    // слот в Port->slTimer
+    writeData(ba);                              // Отправка данных в порт
+    sgnParamWrite(ui->spinBox_3->value());      // max error RX
+    m_timer.start(ui->spinBox_2->value());      // слот в Port->slTimer
 }
 
 //
 void MainWindow::slTimerStop()
 {
     m_timer.stop();
-    qDebug()<< "timer stop";
 }
 
-void MainWindow::on_BtnConnect_clicked()
-{
+//void MainWindow::on_BtnConnect_clicked()
+//{
 
-}
+//}
