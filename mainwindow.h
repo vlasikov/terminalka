@@ -30,7 +30,6 @@ signals:
 
 private slots:
     void on_Btn_Serch_clicked();
-    void checkCustomBaudRatePolicy(int idx);
     void Print(QString data);
     void on_cEnterText_returnPressed();
     void on_BtnSave_clicked();
@@ -46,8 +45,6 @@ private slots:
     void on_pushButton_3_clicked();
 
     void slTimerStop();
-
-//    void on_BtnConnect_clicked();
 
     void on_pushButton_4_clicked();
 

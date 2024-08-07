@@ -17,36 +17,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-    connect(ui->BaudRateBox, SIGNAL(currentIndexChanged(int)) ,this, SLOT(checkCustomBaudRatePolicy(int)));
-    ui->BaudRateBox->addItem(QLatin1String("57600"), QSerialPort::Baud57600);
-    ui->BaudRateBox->addItem(QLatin1String("9600"), QSerialPort::Baud9600);
-    ui->BaudRateBox->addItem(QLatin1String("19200"), QSerialPort::Baud19200);
-    ui->BaudRateBox->addItem(QLatin1String("38400"), QSerialPort::Baud38400);
-    ui->BaudRateBox->addItem(QLatin1String("115200"), QSerialPort::Baud115200);
-    ui->BaudRateBox->addItem(QLatin1String("Custom"));
-   // fill data bits
-    ui->DataBitsBox->addItem(QLatin1String("5"), QSerialPort::Data5);
-    ui->DataBitsBox->addItem(QLatin1String("6"), QSerialPort::Data6);
-    ui->DataBitsBox->addItem(QLatin1String("7"), QSerialPort::Data7);
-    ui->DataBitsBox->addItem(QLatin1String("8"), QSerialPort::Data8);
-    ui->DataBitsBox->setCurrentIndex(3);
-   // fill parity
-    ui->ParityBox->addItem(QLatin1String("None"), QSerialPort::NoParity);
-    ui->ParityBox->addItem(QLatin1String("Even"), QSerialPort::EvenParity);
-    ui->ParityBox->addItem(QLatin1String("Odd"), QSerialPort::OddParity);
-    ui->ParityBox->addItem(QLatin1String("Mark"), QSerialPort::MarkParity);
-    ui->ParityBox->addItem(QLatin1String("Space"), QSerialPort::SpaceParity);
-   // fill stop bits
-    ui->StopBitsBox->addItem(QLatin1String("1"), QSerialPort::OneStop);
-    #ifdef Q_OS_WIN
-    ui->StopBitsBox->addItem(QLatin1String("1.5"), QSerialPort::OneAndHalfStop);
-    #endif
-    ui->StopBitsBox->addItem(QLatin1String("2"), QSerialPort::TwoStop);
-   // fill flow control
-    ui->FlowControlBox->addItem(QLatin1String("None"), QSerialPort::NoFlowControl);
-    ui->FlowControlBox->addItem(QLatin1String("RTS/CTS"), QSerialPort::HardwareControl);
-    ui->FlowControlBox->addItem(QLatin1String("XON/XOFF"), QSerialPort::SoftwareControl);
     connect(ui->cBtnSend,SIGNAL(clicked()),this, SLOT(on_cEnterText_returnPressed()) );
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     QThread *thread_New = new QThread;                                      //Создаем поток для порта платы
@@ -86,15 +56,6 @@ void MainWindow::on_Btn_Serch_clicked()
         {
         ui->PortNameBox->addItem(info.portName());
         }
-}
-
-void MainWindow::checkCustomBaudRatePolicy(int idx)
-{
-    bool isCustomBaudRate = !ui->BaudRateBox->itemData(idx).isValid();
-    ui->BaudRateBox->setEditable(isCustomBaudRate);
-    if (isCustomBaudRate) {
-        ui->BaudRateBox->clearEditText();
-    }
 }
 
 //+++++++++++++[Процедура ввода данных из строки]++++++++++++++++++++++++++++++++++++++++
