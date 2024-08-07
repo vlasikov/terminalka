@@ -78,12 +78,8 @@ void MainWindow::Print(QString data)
     ui->consol->moveCursor(QTextCursor::End);       //Scroll
 }
 
-void MainWindow::on_BtnSave_clicked()
+void MainWindow::on_BtnConnect_clicked()
 {
-
-//savesettings(ui->PortNameBox->currentText(), ui->BaudRateBox->currentText().toInt(),ui->DataBitsBox->currentText().toInt(),
-//             ui->ParityBox->currentText().toInt(), ui->StopBitsBox->currentText().toInt(), ui->FlowControlBox->currentText().toInt());
-
     savesettings(ui->PortNameBox->currentText(), 57600, 8, 0, 1, 0);
 }
 
@@ -153,7 +149,3 @@ void MainWindow::slTimerStop()
     m_timer.stop();
 }
 
-//void MainWindow::on_BtnConnect_clicked()
-//{
-
-//}

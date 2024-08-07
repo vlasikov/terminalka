@@ -32,21 +32,18 @@ private slots:
     void on_Btn_Serch_clicked();
     void Print(QString data);
     void on_cEnterText_returnPressed();
-    void on_BtnSave_clicked();
+    void on_BtnConnect_clicked();
 
     void on_cBtnSend_clicked();
 
     void sl_infoPort(int, int, int);
 
     void on_pushButton_clicked();
-
     void on_pushButton_2_clicked();
-
     void on_pushButton_3_clicked();
+    void on_pushButton_4_clicked();
 
     void slTimerStop();
-
-    void on_pushButton_4_clicked();
 
 private:
     Ui::MainWindow *ui;
